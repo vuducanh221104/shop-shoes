@@ -1,0 +1,52 @@
+.header {
+  .logo {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+  }
+
+  .main-nav {
+    .nav-link {
+      color: var(--text-color);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      transition: color 0.3s ease;
+
+      &:hover, &.active {
+        color: var(--primary-color);
+      }
+    }
+  }
+
+  .cart-icon {
+    color: var(--text-color);
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
+
+  .mobile-menu-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+  }
+
+  .mobile-menu {
+    padding: 1rem 0;
+    border-top: 1px solid #eee;
+    
+    .nav-link {
+      padding: 0.75rem 0;
+      color: var(--text-color);
+      
+      &:hover, &.active {
+        color: var(--primary-color);
+      }
+    }
+  }
+} 

@@ -1,0 +1,134 @@
+.product-details-page {
+  .product-image-container {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    
+    .product-image {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+  }
+  
+  .product-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    
+    @media (max-width: 768px) {
+      font-size: 1.5rem;
+    }
+  }
+  
+  .product-price {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--accent-color);
+  }
+  
+  .product-description {
+    color: #666;
+    line-height: 1.6;
+  }
+  
+  .add-to-cart-btn {
+    min-width: 180px;
+  }
+  
+  .favorite-btn {
+    &.is-favorite {
+      color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+  }
+  
+  .product-meta {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    
+    .meta-item {
+      margin-bottom: 0.5rem;
+      
+      .meta-label {
+        font-weight: 600;
+        margin-right: 0.5rem;
+      }
+      
+      a {
+        color: var(--primary-color);
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+  
+  .product-tabs {
+    .tab-content {
+      padding: 1.5rem 0;
+      
+      h3 {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+      
+      h4 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin: 1.5rem 0 1rem;
+      }
+      
+      ul {
+        padding-left: 1.5rem;
+        
+        li {
+          margin-bottom: 0.5rem;
+        }
+      }
+      
+      table {
+        th {
+          width: 30%;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+  
+  .average-rating {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+  
+  .rating-bars {
+    .progress {
+      height: 10px;
+      background-color: #eee;
+      
+      .progress-bar {
+        background-color: var(--primary-color);
+      }
+    }
+  }
+  
+  .review-item {
+    .review-author {
+      margin-bottom: 0;
+    }
+    
+    .review-date {
+      color: #999;
+      font-size: 0.9rem;
+    }
+    
+    .review-content {
+      color: #666;
+      line-height: 1.6;
+    }
+  }
+} 
