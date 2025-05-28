@@ -1,0 +1,186 @@
+@import 'variables';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  color: $dark-color;
+  background-color: $white;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: $primary-color;
+  text-decoration: none;
+  transition: $transition-base;
+  
+  &:hover {
+    color: darken($primary-color, 10%);
+  }
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-bottom: $spacing-4;
+  font-weight: $font-weight-bold;
+  line-height: 1.2;
+}
+
+p {
+  margin-bottom: $spacing-4;
+}
+
+button {
+  cursor: pointer;
+  font-family: $font-family-base;
+}
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-4;
+  
+  @media (min-width: $breakpoint-md) {
+    padding: 0 $spacing-6;
+  }
+}
+
+.btn {
+  display: inline-block;
+  font-weight: $font-weight-medium;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: $spacing-2 $spacing-4;
+  font-size: $font-size-base;
+  line-height: $line-height-base;
+  border-radius: $border-radius;
+  transition: $transition-base;
+  
+  &-primary {
+    color: $white;
+    background-color: $primary-color;
+    border-color: $primary-color;
+    
+    &:hover {
+      background-color: darken($primary-color, 10%);
+      border-color: darken($primary-color, 10%);
+    }
+  }
+  
+  &-secondary {
+    color: $white;
+    background-color: $secondary-color;
+    border-color: $secondary-color;
+    
+    &:hover {
+      background-color: darken($secondary-color, 10%);
+      border-color: darken($secondary-color, 10%);
+    }
+  }
+  
+  &-outline {
+    color: $primary-color;
+    background-color: transparent;
+    border-color: $primary-color;
+    
+    &:hover {
+      color: $white;
+      background-color: $primary-color;
+    }
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: $spacing-6;
+  
+  @media (min-width: $breakpoint-sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (min-width: $breakpoint-md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  @media (min-width: $breakpoint-lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.card {
+  background-color: $white;
+  border-radius: $border-radius;
+  box-shadow: $box-shadow-sm;
+  overflow: hidden;
+  transition: $transition-base;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: $box-shadow;
+  }
+}
+
+.section {
+  padding: $spacing-12 0;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-column {
+  flex-direction: column;
+}
+
+.mt-1 { margin-top: $spacing-1; }
+.mt-2 { margin-top: $spacing-2; }
+.mt-3 { margin-top: $spacing-3; }
+.mt-4 { margin-top: $spacing-4; }
+.mt-5 { margin-top: $spacing-5; }
+
+.mb-1 { margin-bottom: $spacing-1; }
+.mb-2 { margin-bottom: $spacing-2; }
+.mb-3 { margin-bottom: $spacing-3; }
+.mb-4 { margin-bottom: $spacing-4; }
+.mb-5 { margin-bottom: $spacing-5; }
+
+.ml-1 { margin-left: $spacing-1; }
+.ml-2 { margin-left: $spacing-2; }
+.ml-3 { margin-left: $spacing-3; }
+.ml-4 { margin-left: $spacing-4; }
+.ml-5 { margin-left: $spacing-5; }
+
+.mr-1 { margin-right: $spacing-1; }
+.mr-2 { margin-right: $spacing-2; }
+.mr-3 { margin-right: $spacing-3; }
+.mr-4 { margin-right: $spacing-4; }
+.mr-5 { margin-right: $spacing-5; } 

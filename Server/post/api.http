@@ -1,0 +1,284 @@
+@baseUrl = http://localhost:5160
+
+################################
+# Authentication APIs
+################################
+
+### Register a new user
+# @name register
+POST {{baseUrl}}/api/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser@example.com",
+  "password": "Password123!",
+  "fullName": "Test User",
+  "address": "123 Test Street, City",
+  "phone": "0123456789"
+}
+
+### Login to get JWT token
+# @name login
+POST {{baseUrl}}/api/users/login
+Content-Type: application/json
+
+{
+  "email": "testuser@example.com",
+  "password": "Password123!"
+}
+
+### Store token from login response
+@authToken = {{login.response.body.token}}
+
+### Register admin user
+POST {{baseUrl}}/api/users/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "admin@example.com",
+  "password": "Admin123!",
+  "fullName": "Admin User",
+  "address": "456 Admin Street, City",
+  "phone": "9876543210"
+}
+
+# Note: You would need to manually update this user to be admin in MongoDB
+
+### Login as admin to get admin token
+# @name adminLogin
+POST {{baseUrl}}/api/users/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin123!"
+}
+
+### Store admin token
+@adminToken = {{adminLogin.response.body.token}}
+
+### Get user profile
+GET {{baseUrl}}/api/users/profile
+# Authorization: Bearer {{authToken}} - Đã comment xác thực ở backend
+
+### Get all users (requires admin)
+GET {{baseUrl}}/api/users
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+### Get user by ID
+GET {{baseUrl}}/api/users/{{userId}}
+# Authorization: Bearer {{authToken}} - Đã comment xác thực ở backend
+
+### Update user
+PUT {{baseUrl}}/api/users/{{userId}}
+Content-Type: application/json
+# Authorization: Bearer {{authToken}} - Đã comment xác thực ở backend
+
+{
+  "fullName": "Updated User Name",
+  "address": "Updated Address, City",
+  "phone": "0987654321"
+}
+
+### Delete user (requires admin)
+DELETE {{baseUrl}}/api/users/{{userId}}
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+################################
+# Product APIs
+################################
+
+### Get all products
+GET {{baseUrl}}/api/products
+
+### Get products by category
+GET {{baseUrl}}/api/products/category/68357d04f36a0ed8780f72dd
+
+### Get product by ID
+# @name getProduct
+GET {{baseUrl}}/api/products/{{productId}}
+
+### Create a new product (requires admin)
+# @name createProduct
+POST {{baseUrl}}/api/products
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "name": "New Air Max",
+  "description": "The latest Air Max model with improved cushioning",
+  "brand": "Nike",
+  "category": ["68357d04f36a0ed8780f72dd"],
+  "tags": ["New", "Running", "Cushioning"],
+  "stock": 15,
+  "price": {
+    "original": 1500000,
+    "discount": 1450000,
+    "quantityDiscount": 5
+  },
+  "variants": [
+    {
+      "color": "Black",
+      "sizes": [38, 39, 40, 41, 42],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    },
+    {
+      "color": "White",
+      "sizes": [39, 40, 41, 42, 43],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    }
+  ]
+}
+
+### Store product ID from create response
+@newProductId = {{createProduct.response.body.id}}
+
+### Update a product (requires admin)
+PUT {{baseUrl}}/api/products/{{newProductId}}
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "description": "Updated description for the latest Air Max model",
+  "stock": 20,
+  "category": ["68357d04f36a0ed8780f72dd", "68357d04f36a0ed8780f72df"],
+  "price": {
+    "original": 1500000,
+    "discount": 1400000,
+    "quantityDiscount": 8
+  },
+  "variants": [
+    {
+      "color": "Black",
+      "sizes": [38, 39, 40, 41, 42, 43],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    },
+    {
+      "color": "White",
+      "sizes": [39, 40, 41, 42, 43],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    },
+    {
+      "color": "Red",
+      "sizes": [40, 41, 42],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    }
+  ]
+}
+
+### Delete a product (requires admin)
+DELETE {{baseUrl}}/api/products/{{newProductId}}
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+################################
+# Category APIs
+################################
+
+### Get all categories
+GET {{baseUrl}}/api/categories
+
+### Get category by ID
+GET {{baseUrl}}/api/categories/{{categoryId}}
+
+### Get category by slug
+GET {{baseUrl}}/api/categories/slug/sneaker
+
+### Get products in a category by ID
+GET {{baseUrl}}/api/categories/{{categoryId}}/products
+
+### Get products in a category by slug
+GET {{baseUrl}}/api/categories/slug/sneaker/products
+
+### Get men's products by category slug
+GET {{baseUrl}}/api/categories/slug/men/products
+
+### Create a new category (requires admin)
+# @name createCategory
+POST {{baseUrl}}/api/categories
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "name": "Special Collection",
+  "slug": "special-collection",
+  "description": "Our exclusive special collection shoes",
+  "image": "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9"
+}
+
+### Store category ID from create response
+@newCategoryId = {{createCategory.response.body.id}}
+
+### Update a category (requires admin)
+PUT {{baseUrl}}/api/categories/{{newCategoryId}}
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "name": "Special Collection",
+  "slug": "special-collection",
+  "description": "Updated description for our exclusive special collection",
+  "image": "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9"
+}
+
+### Delete a category (requires admin)
+DELETE {{baseUrl}}/api/categories/{{newCategoryId}} 
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+################################
+# Order APIs
+################################
+
+### Get all orders (requires admin)
+GET {{baseUrl}}/api/orders
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+### Get user's orders
+GET {{baseUrl}}/api/orders/my-orders
+# Authorization: Bearer {{authToken}} - Đã comment xác thực ở backend
+
+### Create a new order
+# @name createOrder
+POST {{baseUrl}}/api/orders
+Content-Type: application/json
+# Authorization: Bearer {{authToken}} - Đã comment xác thực ở backend
+
+{
+  "items": [
+    {
+      "productId": "{{productId}}",
+      "quantity": 2
+    }
+  ],
+  "shippingAddress": "123 Shipping Address, City, Country",
+  "contactPhone": "0123456789",
+  "paymentMethod": "CashOnDelivery"
+}
+
+### Store order ID from create response
+@newOrderId = {{createOrder.response.body.id}}
+
+### Get order by ID
+GET {{baseUrl}}/api/orders/{{newOrderId}}
+# Authorization: Bearer {{authToken}} - Đã comment xác thực ở backend
+
+### Update order status (requires admin)
+PUT {{baseUrl}}/api/orders/{{newOrderId}}/status
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "status": "Processing"
+}
+
+### Update payment status (requires admin)
+PUT {{baseUrl}}/api/orders/{{newOrderId}}/payment
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+"Paid"
+
+### Delete an order (requires admin)
+DELETE {{baseUrl}}/api/orders/{{newOrderId}}
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend

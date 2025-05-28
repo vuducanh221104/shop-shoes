@@ -1,0 +1,102 @@
+@import '../styles/variables';
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: $white;
+  box-shadow: 0 2px 10px rgba($black, 0.1);
+  padding: $spacing-4 0;
+}
+
+.headerContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  h1 {
+    font-size: 1.75rem;
+    margin: 0;
+    font-weight: $font-weight-bold;
+    color: $primary-color;
+  }
+}
+
+.nav {
+  display: none;
+  
+  @media (min-width: $breakpoint-md) {
+    display: block;
+  }
+}
+
+.navList {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navItem {
+  margin: 0 $spacing-4;
+}
+
+.navLink {
+  font-weight: $font-weight-medium;
+  color: $dark-color;
+  position: relative;
+  
+  &:hover {
+    color: $primary-color;
+  }
+  
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: $primary-color;
+    transition: width 0.3s ease;
+  }
+  
+  &:hover::after {
+    width: 100%;
+  }
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  margin-left: $spacing-3;
+  position: relative;
+  color: $dark-color;
+  transition: $transition-base;
+  
+  &:hover {
+    color: $primary-color;
+  }
+}
+
+.cartCount {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: $primary-color;
+  color: $white;
+  font-size: 0.75rem;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+} 

@@ -1,0 +1,44 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+@Client @Serverr 
+Act as a full-stack developer using Next.js (App Router) and only SASS for styling (no Tailwind). Use Axios for API calls.
+
+Build the basic frontend for a shoe e-commerce site similar to Nike. The backend API is provided and accessible via given endpoints. Do not include mock data — fetch real product data from the API.
+
+Tasks:
+Layout
+
+Create a Header component with a logo and basic navigation.
+
+Create a Footer with placeholder content and links.
+
+Home Page
+
+Fetch and display all available products from the backend API.
+
+Each product should show an image, name, price, and a link to its detail page.
+
+Product Details Page
+
+Dynamically generate a product details page using product id from the URL params.
+
+Display the product’s full information: image, title, price, description, etc.
+
+Tech Constraints:
+Use Next.js App Router (/app folder structure).
+
+Use SASS for styling (no Tailwind CSS).
+
+Use Axios for all API requests.
+
+Structure code cleanly using components for Header, Footer, ProductCard, etc.
+
+Input:
+Backend API base URL: [your API URL here]
+
+Product endpoint: /api/products (GET all), /api/products/[id] (GET one by id)
+
+notice: ui is beautiful better

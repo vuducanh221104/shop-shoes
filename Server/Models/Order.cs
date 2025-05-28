@@ -1,43 +1,71 @@
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+using System;
+using System.Collections.Generic;
 
 namespace ShoeShopAPI.Models
 {
     public class Order
     {
-        public int Id { get; set; }
-
-        [Required]
-        public string UserId { get; set; }
-
-        [Required]
-        public DateTime OrderDate { get; set; } = DateTime.Now;
-
-        [Required]
-        [Column(TypeName = "decimal(18,2)")]
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
+        
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string UserId { get; set; } = null!;
+        
+        public List<OrderItem> Items { get; set; } = new List<OrderItem>();
+        
         public decimal TotalAmount { get; set; }
-
-        [Required]
-        [MaxLength(50)]
+        
+        public string ShippingAddress { get; set; } = null!;
+        
+        public string ContactPhone { get; set; } = null!;
+        
         public string Status { get; set; } = "Pending"; // Pending, Processing, Shipped, Delivered, Cancelled
-
-        [Required]
-        [MaxLength(100)]
-        public string ShippingName { get; set; }
-
-        [Required]
-        [MaxLength(20)]
-        public string ShippingPhone { get; set; }
-
-        [Required]
-        [MaxLength(200)]
-        public string ShippingAddress { get; set; }
-
-        [MaxLength(500)]
-        public string? Notes { get; set; }
-
-        public virtual ApplicationUser User { get; set; }
-
-        public virtual ICollection<OrderItem> OrderItems { get; set; }
+        
+        public string PaymentMethod { get; set; } = "CashOnDelivery"; // CashOnDelivery, CreditCard, BankTransfer
+        
+        public string PaymentStatus { get; set; } = "Pending"; // Pending, Paid, Failed
+        
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        
+        public DateTime? UpdatedAt { get; set; }
+    }
+    
+    public class OrderItem
+    {
+        public string ProductId { get; set; } = null!;
+        
+        public string ProductName { get; set; } = null!;
+        
+        public decimal Price { get; set; }
+        
+        public int Quantity { get; set; }
+        
+        public decimal Subtotal { get; set; }
+    }
+    
+    public class CreateOrderRequest
+    {
+        public List<OrderItemRequest> Items { get; set; } = new List<OrderItemRequest>();
+        
+        public string ShippingAddress { get; set; } = null!;
+        
+        public string ContactPhone { get; set; } = null!;
+        
+        public string PaymentMethod { get; set; } = "CashOnDelivery";
+    }
+    
+    public class OrderItemRequest
+    {
+        public string ProductId { get; set; } = null!;
+        
+        public int Quantity { get; set; }
+    }
+    
+    public class UpdateOrderStatusRequest
+    {
+        public string Status { get; set; } = null!;
     }
 } 

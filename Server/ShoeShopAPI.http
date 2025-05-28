@@ -1,0 +1,240 @@
+@ShoeShopAPI_HostAddress = http://localhost:5160
+
+GET {{ShoeShopAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
+### Shoe Shop API HTTP Client File
+
+###################
+### Authentication
+###################
+
+### Register a new user
+POST https://localhost:5001/api/users/register
+Content-Type: application/json
+
+{
+  "username": "customer1",
+  "email": "customer1@example.com",
+  "password": "Password123!",
+  "fullName": "John Doe",
+  "address": "123 Main St, City",
+  "phone": "0123456789"
+}
+
+### Login
+POST https://localhost:5001/api/users/login
+Content-Type: application/json
+
+{
+  "email": "customer1@example.com",
+  "password": "Password123!"
+}
+
+### Get user profile (requires authentication)
+# @name userProfile
+GET https://localhost:5001/api/users/profile
+Authorization: Bearer {{authToken}}
+
+### Register an admin user
+POST https://localhost:5001/api/users/register
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "email": "admin@example.com",
+  "password": "Admin123!",
+  "fullName": "Admin User",
+  "address": "456 Admin St, City",
+  "phone": "9876543210"
+}
+
+# Note: You would need to manually update this user to be admin in MongoDB
+
+###################
+### Products
+###################
+
+### Get all products
+GET https://localhost:5001/api/products
+
+### Get product by ID
+GET https://localhost:5001/api/products/{{productId}}
+
+### Get products by category
+GET https://localhost:5001/api/products/category/sneaker
+
+### Create a new product (requires admin)
+# @name createProduct
+POST https://localhost:5001/api/products
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "name": "New Air Max",
+  "description": "The latest Air Max model with improved cushioning",
+  "brand": "Nike",
+  "category": ["68357d04f36a0ed8780f72dd"],
+  "tags": ["New", "Running", "Cushioning"],
+  "stock": 15,
+  "price": {
+    "original": 1500000,
+    "discount": 1450000,
+    "quantityDiscount": 5
+  },
+  "variants": [
+    {
+      "color": "Black",
+      "sizes": [38, 39, 40, 41, 42],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    },
+    {
+      "color": "White",
+      "sizes": [39, 40, 41, 42, 43],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    }
+  ]
+}
+
+### Update a product (requires admin)
+PUT https://localhost:5001/api/products/{{newProductId}}
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "description": "Updated description for the latest Air Max model",
+  "stock": 20,
+  "category": ["68357d04f36a0ed8780f72dd", "68357d04f36a0ed8780f72df"],
+  "price": {
+    "original": 1500000,
+    "discount": 1400000,
+    "quantityDiscount": 8
+  },
+  "variants": [
+    {
+      "color": "Black",
+      "sizes": [38, 39, 40, 41, 42, 43],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    },
+    {
+      "color": "White",
+      "sizes": [39, 40, 41, 42, 43],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    },
+    {
+      "color": "Red",
+      "sizes": [40, 41, 42],
+      "images": ["https://images.unsplash.com/photo-1542291026-7eec264c27ff"]
+    }
+  ]
+}
+
+### Delete a product (requires admin)
+DELETE https://localhost:5001/api/products/{{productId}}
+Authorization: Bearer {{adminToken}}
+
+###################
+### Categories
+###################
+
+### Get all categories
+GET https://localhost:5001/api/categories
+
+### Get category by ID
+GET https://localhost:5001/api/categories/{{categoryId}}
+
+### Get category by slug
+GET https://localhost:5001/api/categories/slug/sneaker
+
+### Get products in a category by ID
+GET https://localhost:5001/api/categories/{{categoryId}}/products
+
+### Get products in a category by slug
+GET https://localhost:5001/api/categories/slug/sneaker/products
+
+### Create a new category (requires admin)
+# @name createCategory
+POST https://localhost:5001/api/categories
+Content-Type: application/json
+# Authorization: Bearer {{adminToken}} - Đã comment xác thực ở backend
+
+{
+  "name": "Special Collection",
+  "slug": "special-collection",
+  "description": "Our exclusive special collection shoes",
+  "image": "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9"
+}
+
+### Update a category (requires admin)
+PUT https://localhost:5001/api/categories/{{categoryId}}
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "name": "Limited Edition",
+  "description": "Updated description for limited edition shoes",
+  "image": "https://images.unsplash.com/photo-1582588678413-dbf45f4823e9"
+}
+
+### Delete a category (requires admin)
+DELETE https://localhost:5001/api/categories/{{categoryId}}
+Authorization: Bearer {{adminToken}}
+
+###################
+### Orders
+###################
+
+### Get all orders (requires admin)
+GET https://localhost:5001/api/orders
+Authorization: Bearer {{adminToken}}
+
+### Get user's orders
+GET https://localhost:5001/api/orders/my-orders
+Authorization: Bearer {{authToken}}
+
+### Get order by ID
+GET https://localhost:5001/api/orders/{{orderId}}
+Authorization: Bearer {{authToken}}
+
+### Create a new order
+POST https://localhost:5001/api/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "items": [
+    {
+      "productId": "{{productId}}",
+      "quantity": 2
+    },
+    {
+      "productId": "{{anotherProductId}}",
+      "quantity": 1
+    }
+  ],
+  "shippingAddress": "123 Main St, City, Country",
+  "contactPhone": "0123456789",
+  "paymentMethod": "CashOnDelivery"
+}
+
+### Update order status (requires admin)
+PUT https://localhost:5001/api/orders/{{orderId}}/status
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+{
+  "status": "Processing"
+}
+
+### Update payment status (requires admin)
+PUT https://localhost:5001/api/orders/{{orderId}}/payment
+Content-Type: application/json
+Authorization: Bearer {{adminToken}}
+
+"Paid"
+
+### Delete an order (requires admin)
+DELETE https://localhost:5001/api/orders/{{orderId}}
+Authorization: Bearer {{adminToken}}

@@ -1,79 +1,111 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ShoeShopAPI.Models.DTOs;
+using ShoeShopAPI.Models;
 using ShoeShopAPI.Services;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ShoeShopAPI.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class CategoriesController : ControllerBase
     {
-        private readonly ICategoryService _categoryService;
+        private readonly ProductService _productService;
 
-        public CategoriesController(ICategoryService categoryService)
+        public CategoriesController(ProductService productService)
         {
-            _categoryService = categoryService;
+            _productService = productService;
         }
 
-        // GET: api/Categories
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CategoryDTO>>> GetCategories()
+        public async Task<ActionResult<List<Category>>> GetAllCategories()
         {
-            var categories = await _categoryService.GetAllCategoriesAsync();
+            var categories = await _productService.GetAllCategoriesAsync();
             return Ok(categories);
         }
 
-        // GET: api/Categories/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CategoryDTO>> GetCategory(int id)
+        public async Task<ActionResult<Category>> GetCategoryById(string id)
         {
-            var category = await _categoryService.GetCategoryByIdAsync(id);
-
+            var category = await _productService.GetCategoryByIdAsync(id);
+            
             if (category == null)
             {
                 return NotFound();
             }
-
+            
             return Ok(category);
         }
 
-        // POST: api/Categories
-        [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<CategoryDTO>> CreateCategory(CategoryCreateDTO categoryDto)
+        [HttpGet("slug/{slug}")]
+        public async Task<ActionResult<Category>> GetCategoryBySlug(string slug)
         {
-            var createdCategory = await _categoryService.CreateCategoryAsync(categoryDto);
-            return CreatedAtAction(nameof(GetCategory), new { id = createdCategory.Id }, createdCategory);
-        }
-
-        // PUT: api/Categories/5
-        [HttpPut("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateCategory(int id, CategoryUpdateDTO categoryDto)
-        {
-            var updatedCategory = await _categoryService.UpdateCategoryAsync(id, categoryDto);
-
-            if (updatedCategory == null)
+            var category = await _productService.GetCategoryBySlugAsync(slug);
+            
+            if (category == null)
             {
                 return NotFound();
             }
-
-            return Ok(updatedCategory);
+            
+            return Ok(category);
         }
 
-        // DELETE: api/Categories/5
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteCategory(int id)
+        [HttpGet("{categoryId}/products")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategory(string categoryId)
         {
-            var result = await _categoryService.DeleteCategoryAsync(id);
+            var products = await _productService.GetByCategoryAsync(categoryId);
+            return Ok(products);
+        }
 
-            if (!result)
+        [HttpGet("slug/{slug}/products")]
+        public async Task<ActionResult<List<Product>>> GetProductsByCategorySlug(string slug)
+        {
+            var products = await _productService.GetProductsByCategorySlugAsync(slug);
+            return Ok(products);
+        }
+        
+        [HttpPost]
+        // [Authorize(Roles = "Admin")] // Tạm thời comment lại
+        public async Task<ActionResult<Category>> CreateCategory(CategoryCreateRequest categoryRequest)
+        {
+            try
             {
-                return BadRequest("Cannot delete category. It may not exist or has associated products.");
+                var category = await _productService.CreateCategoryAsync(categoryRequest);
+                return CreatedAtAction(nameof(GetCategoryById), new { id = category.Id }, category);
             }
-
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+        
+        [HttpPut("{id}")]
+        // [Authorize(Roles = "Admin")] // Tạm thời comment lại
+        public async Task<ActionResult> UpdateCategory(string id, Category categoryIn)
+        {
+            var category = await _productService.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            
+            await _productService.UpdateCategoryAsync(id, categoryIn);
+            return NoContent();
+        }
+        
+        [HttpDelete("{id}")]
+        // [Authorize(Roles = "Admin")] // Tạm thời comment lại
+        public async Task<ActionResult> DeleteCategory(string id)
+        {
+            var category = await _productService.GetCategoryByIdAsync(id);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            
+            await _productService.RemoveCategoryAsync(id);
             return NoContent();
         }
     }

@@ -1,0 +1,14 @@
+@import '../../../styles/variables';
+
+.main {
+  padding: $spacing-12 0;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.25rem;
+  color: $gray-600;
+} 

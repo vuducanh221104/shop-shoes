@@ -1,135 +1,203 @@
-using Microsoft.EntityFrameworkCore;
-using ShoeShopAPI.Data;
+using MongoDB.Driver;
 using ShoeShopAPI.Models;
-using ShoeShopAPI.Models.DTOs;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ShoeShopAPI.Services
 {
-    public class ProductService : IProductService
+    public class ProductService
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMongoCollection<Product> _products;
+        private readonly IMongoCollection<Category> _categories;
 
-        public ProductService(ApplicationDbContext context)
+        public ProductService(MongoDBContext context)
         {
-            _context = context;
+            _products = context.Products;
+            _categories = context.Categories;
         }
 
-        public async Task<List<ProductDTO>> GetAllProductsAsync()
+        // Product Methods
+        public async Task<List<Product>> GetAllAsync()
         {
-            var products = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Reviews)
-                .ToListAsync();
-
-            return products.Select(p => MapToProductDTO(p)).ToList();
+            try
+            {
+                return await _products.Find(_ => true).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetAllAsync: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+                return new List<Product>();
+            }
         }
 
-        public async Task<ProductDTO> GetProductByIdAsync(int id)
+        public async Task<List<Product>> GetByCategoryAsync(string category)
         {
-            var product = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Reviews)
-                .FirstOrDefaultAsync(p => p.Id == id);
+            try
+            {
+                return await _products.Find(p => p.Category.Contains(category)).ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetByCategoryAsync: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+                return new List<Product>();
+            }
+        }
 
-            if (product == null)
+        public async Task<Product> GetByIdAsync(string id)
+        {
+            try
+            {
+                return await _products.Find(p => p.Id == id).FirstOrDefaultAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetByIdAsync: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
                 return null;
-
-            return MapToProductDTO(product);
+            }
         }
 
-        public async Task<List<ProductDTO>> GetProductsByCategoryAsync(int categoryId)
-        {
-            var products = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Reviews)
-                .Where(p => p.CategoryId == categoryId)
-                .ToListAsync();
-
-            return products.Select(p => MapToProductDTO(p)).ToList();
-        }
-
-        public async Task<ProductDTO> CreateProductAsync(ProductCreateDTO productDto)
+        public async Task<Product> CreateAsync(ProductCreateRequest productRequest)
         {
             var product = new Product
             {
-                Name = productDto.Name,
-                Description = productDto.Description,
-                Price = productDto.Price,
-                ImageUrl = productDto.ImageUrl,
-                CategoryId = productDto.CategoryId,
-                InStock = productDto.InStock,
-                CreatedAt = DateTime.Now
+                Name = productRequest.Name,
+                Description = productRequest.Description,
+                Brand = productRequest.Brand,
+                Category = productRequest.Category,
+                Tags = productRequest.Tags,
+                Stock = productRequest.Stock,
+                Price = productRequest.Price,
+                Variants = productRequest.Variants,
+                Rating = 0,
+                ReviewCount = 0,
+                CreatedAt = DateTime.UtcNow
             };
 
-            _context.Products.Add(product);
-            await _context.SaveChangesAsync();
-
-            return await GetProductByIdAsync(product.Id);
+            await _products.InsertOneAsync(product);
+            return product;
         }
 
-        public async Task<ProductDTO> UpdateProductAsync(int id, ProductUpdateDTO productDto)
+        public async Task<Product> UpdateAsync(string id, Product productIn)
         {
-            var product = await _context.Products.FindAsync(id);
+            productIn.UpdatedAt = DateTime.UtcNow;
+            await _products.ReplaceOneAsync(p => p.Id == id, productIn);
+            return productIn;
+        }
+
+        public async Task<Product> UpdateAsync(string id, ProductUpdateRequest updateRequest)
+        {
+            var product = await GetByIdAsync(id);
             if (product == null)
-                return null;
-
-            product.Name = productDto.Name;
-            product.Description = productDto.Description;
-            product.Price = productDto.Price;
-            product.ImageUrl = productDto.ImageUrl;
-            product.CategoryId = productDto.CategoryId;
-            product.InStock = productDto.InStock;
-            product.UpdatedAt = DateTime.Now;
-
-            _context.Products.Update(product);
-            await _context.SaveChangesAsync();
-
-            return await GetProductByIdAsync(id);
-        }
-
-        public async Task<bool> DeleteProductAsync(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-                return false;
-
-            _context.Products.Remove(product);
-            await _context.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<List<ProductDTO>> SearchProductsAsync(string searchTerm)
-        {
-            if (string.IsNullOrWhiteSpace(searchTerm))
-                return await GetAllProductsAsync();
-
-            var products = await _context.Products
-                .Include(p => p.Category)
-                .Include(p => p.Reviews)
-                .Where(p => p.Name.Contains(searchTerm) || p.Description.Contains(searchTerm))
-                .ToListAsync();
-
-            return products.Select(p => MapToProductDTO(p)).ToList();
-        }
-
-        private ProductDTO MapToProductDTO(Product product)
-        {
-            return new ProductDTO
             {
-                Id = product.Id,
-                Name = product.Name,
-                Description = product.Description,
-                Price = product.Price,
-                ImageUrl = product.ImageUrl,
-                CategoryId = product.CategoryId,
-                CategoryName = product.Category?.Name,
-                InStock = product.InStock,
-                AverageRating = product.Reviews != null && product.Reviews.Any() 
-                    ? product.Reviews.Average(r => r.Rating) 
-                    : 0,
-                ReviewCount = product.Reviews?.Count ?? 0
+                throw new Exception($"Product with ID {id} not found");
+            }
+
+            if (updateRequest.Name != null)
+                product.Name = updateRequest.Name;
+            
+            if (updateRequest.Description != null)
+                product.Description = updateRequest.Description;
+            
+            if (updateRequest.Brand != null)
+                product.Brand = updateRequest.Brand;
+            
+            if (updateRequest.Category != null)
+                product.Category = updateRequest.Category;
+            
+            if (updateRequest.Tags != null)
+                product.Tags = updateRequest.Tags;
+            
+            if (updateRequest.Stock.HasValue)
+                product.Stock = updateRequest.Stock.Value;
+            
+            if (updateRequest.Price != null)
+                product.Price = updateRequest.Price;
+            
+            if (updateRequest.Variants != null)
+                product.Variants = updateRequest.Variants;
+            
+            if (updateRequest.Rating.HasValue)
+                product.Rating = updateRequest.Rating.Value;
+            
+            if (updateRequest.ReviewCount.HasValue)
+                product.ReviewCount = updateRequest.ReviewCount.Value;
+            
+            product.UpdatedAt = DateTime.UtcNow;
+            
+            await _products.ReplaceOneAsync(p => p.Id == id, product);
+            return product;
+        }
+
+        public async Task RemoveAsync(string id)
+        {
+            await _products.DeleteOneAsync(p => p.Id == id);
+        }
+
+        // Category Methods
+        public async Task<List<Category>> GetAllCategoriesAsync()
+        {
+            return await _categories.Find(_ => true).ToListAsync();
+        }
+
+        public async Task<Category> GetCategoryByIdAsync(string id)
+        {
+            return await _categories.Find(c => c.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task<Category> GetCategoryBySlugAsync(string slug)
+        {
+            return await _categories.Find(c => c.Slug == slug).FirstOrDefaultAsync();
+        }
+
+        public async Task<List<Product>> GetProductsByCategorySlugAsync(string slug)
+        {
+            try
+            {
+                // First find the category by slug
+                var category = await GetCategoryBySlugAsync(slug);
+                if (category == null)
+                {
+                    return new List<Product>();
+                }
+
+                // Then get products by category ID
+                return await GetByCategoryAsync(category.Id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in GetProductsByCategorySlugAsync: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+                return new List<Product>();
+            }
+        }
+
+        public async Task<Category> CreateCategoryAsync(CategoryCreateRequest categoryRequest)
+        {
+            var category = new Category
+            {
+                Name = categoryRequest.Name,
+                Slug = categoryRequest.Slug,
+                Description = categoryRequest.Description,
+                Image = categoryRequest.Image
             };
+
+            await _categories.InsertOneAsync(category);
+            return category;
+        }
+
+        public async Task<Category> UpdateCategoryAsync(string id, Category categoryIn)
+        {
+            await _categories.ReplaceOneAsync(c => c.Id == id, categoryIn);
+            return categoryIn;
+        }
+
+        public async Task RemoveCategoryAsync(string id)
+        {
+            await _categories.DeleteOneAsync(c => c.Id == id);
         }
     }
 } 
