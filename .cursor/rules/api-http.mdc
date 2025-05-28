@@ -1,6 +1,0 @@
----
-description: 
-globs: 
-alwaysApply: true
----
-When editing the AnyOne API update the API file to api.http
