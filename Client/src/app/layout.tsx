@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import "../styles/globals.scss";
 
 export const metadata: Metadata = {
-  title: "ShoeShop - Premium Footwear",
-  description: "Find the perfect pair for every occasion at ShoeShop",
+  title: "LeviathanShop - Premium Footwear",
+  description: "Find the perfect pair for every occasion at LeviathanShop",
 };
 
 export default function RootLayout({

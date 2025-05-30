@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="container">
         <div className={styles.footerContent}>
           <div className={styles.footerColumn}>
-            <h3 className={styles.footerTitle}>ShoeShop</h3>
+            <h3 className={styles.footerTitle}>LeviathanShop</h3>
             <p className={styles.footerText}>
               The best place to find premium quality shoes for all occasions.
               We offer a wide range of styles, sizes, and brands.
@@ -56,14 +56,14 @@ const Footer = () => {
               <p>123 Shoe Street</p>
               <p>Fashion District, City</p>
               <p>Country, 12345</p>
-              <p className={styles.contactEmail}>info@shoeshop.com</p>
+              <p className={styles.contactEmail}>info@LeviathanShop.com</p>
               <p className={styles.contactPhone}>+1 (123) 456-7890</p>
             </address>
           </div>
         </div>
         <div className={styles.footerBottom}>
           <p className={styles.copyright}>
-            &copy; {new Date().getFullYear()} ShoeShop. All rights reserved.
+            &copy; {new Date().getFullYear()} LeviathanShop. All rights reserved.
           </p>
           <div className={styles.footerBottomLinks}>
             <Link href="/privacy" className={styles.footerBottomLink}>Privacy Policy</Link>
