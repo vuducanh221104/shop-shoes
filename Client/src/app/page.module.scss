@@ -1,0 +1,151 @@
+.main {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hero {
+  width: 100%;
+  height: 500px;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 3rem;
+  
+  .content {
+    max-width: 800px;
+    padding: 0 1rem;
+    
+    h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      
+      @media (max-width: 768px) {
+        font-size: 2.5rem;
+      }
+      
+      @media (max-width: 480px) {
+        font-size: 2rem;
+      }
+    }
+    
+    p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      
+      @media (max-width: 480px) {
+        font-size: 1rem;
+      }
+    }
+  }
+  
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .primaryButton {
+    display: inline-block;
+    padding: 0.75rem 2.5rem;
+    background-color: var(--primary-color);
+    color: #fff;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background-color: darken(#ff6b6b, 10%);
+      transform: translateY(-3px);
+    }
+  }
+  
+  .categoryButtons {
+    display: flex;
+    gap: 1rem;
+    
+    @media (max-width: 480px) {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .categoryButton {
+      padding: 0.5rem 1.5rem;
+      background-color: rgba(255, 255, 255, 0.2);
+      border: 1px solid #fff;
+      color: #fff;
+      border-radius: var(--border-radius);
+      transition: all 0.3s ease;
+      
+      &:hover {
+        background-color: #fff;
+        color: #333;
+      }
+    }
+  }
+}
+
+.featuredProducts {
+  margin-bottom: 4rem;
+}
+
+.categories {
+  margin-bottom: 4rem;
+  
+  .categoryGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    
+    @media (max-width: 768px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    @media (max-width: 480px) {
+      grid-template-columns: 1fr;
+    }
+    
+    .categoryCard {
+      position: relative;
+      height: 250px;
+      border-radius: var(--border-radius);
+      overflow: hidden;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+      }
+      
+      .categoryContent {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 1.5rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        color: #fff;
+        
+        h3 {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+      }
+      
+      &:hover img {
+        transform: scale(1.05);
+      }
+    }
+  }
+} 

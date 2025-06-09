@@ -1,0 +1,274 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { FunnelIcon, ChevronDownIcon } from '@heroicons/react/24/outline';
+import ProductCard from '@/components/ProductCard/ProductCard';
+import { getProductsByCategory } from '@/services/api';
+import styles from './page.module.scss';
+
+// Define types to match the actual API response
+interface ProductVariant {
+  id: number;
+  color: string;
+  images: {
+    $id: string;
+    $values: string[];
+  };
+}
+
+interface ApiProduct {
+  slug: any;
+  id: number;
+  name: string;
+  price?: number;
+  priceDetails?: {
+    original: number;
+    discount: number;
+    quantityDiscount: number;
+  };
+  category: {
+    id: number;
+    name: string;
+    description: string;
+    slug: string;
+  } | string;
+  image?: string;
+  tags?: string[];
+  variants?: {
+    $id: string;
+    $values: ProductVariant[];
+  };
+}
+
+interface ApiResponse {
+  $id?: string;
+  $values?: ApiProduct[];
+  items?: ApiProduct[] | {
+    $id: string;
+    $values: ApiProduct[];
+  };
+}
+
+interface CategoryClientProps {
+  slug: string;
+}
+
+const filters = [
+  { name: "Lifestyle" },
+  { name: "Skateboarding" },
+  { name: "Gender", count: 1 },
+  { name: "Sale & Offers" },
+  { name: "Size" },
+  { name: "Colour" },
+  { name: "Collections", count: 1 },
+  { name: "Shoe Height" },
+  { name: "Brand" }
+];
+
+const sortOptions = [
+  { label: "Featured", value: "featured" },
+  { label: "Newest", value: "newest" },
+  { label: "Price: High-Low", value: "price_desc" },
+  { label: "Price: Low-High", value: "price_asc" }
+];
+
+export default function CategoryClient({ slug }: CategoryClientProps) {
+  const searchParams = useSearchParams();
+  const [products, setProducts] = useState<ApiProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showFilters, setShowFilters] = useState(true);
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  // Get current search params
+  const page = Number(searchParams?.get('page')) || 1;
+  const pageSize = Number(searchParams?.get('pageSize')) || 12;
+  const sortBy = searchParams?.get('sortBy') || 'featured';
+  const minPrice = Number(searchParams?.get('minPrice'));
+  const maxPrice = Number(searchParams?.get('maxPrice'));
+
+  // Format category name for display
+  const categoryName = slug?.charAt(0).toUpperCase() + slug?.slice(1);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      if (!slug) return;
+      
+      try {
+        setLoading(true);
+        setError(null);
+        const response = await getProductsByCategory(slug, {
+          page,
+          pageSize,
+          sortBy,
+          minPrice,
+          maxPrice
+        }) as unknown as ApiResponse;
+        
+        console.log('API Response:', response); // Debug log
+        
+        // Handle the $id/$values structure
+        if (response && response.$values) {
+          setProducts(response.$values);
+          console.log('Products set from $values:', response.$values);
+        } else if (response && response.items && typeof response.items === 'object' && '$values' in response.items) {
+          setProducts(response.items.$values);
+          console.log('Products set from items.$values:', response.items.$values);
+        } else if (response && response.$id && response.$values) {
+          setProducts(response.$values);
+          console.log('Products set from root $values:', response.$values);
+        } else if (Array.isArray(response)) {
+          setProducts(response as ApiProduct[]);
+          console.log('Products set from array:', response);
+        } else if (response && Array.isArray(response.items)) {
+          setProducts(response.items);
+          console.log('Products set from items array:', response.items);
+        } else {
+          console.log('Unexpected response structure:', response);
+          setProducts([]);
+        }
+      } catch (error) {
+        console.error('Error fetching products:', error);
+        setError('Failed to load products. Please try again later.');
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [slug, page, pageSize, sortBy, minPrice, maxPrice]);
+
+  const toggleFilters = () => {
+    setShowFilters(!showFilters);
+  };
+
+  const updateSort = (value: string) => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    url.searchParams.set('sortBy', value);
+    window.history.pushState({}, '', url);
+    setShowSortMenu(false);
+  };
+
+  // Debug log for current state
+  console.log('Current state:', { loading, products, error });
+
+  if (error) {
+    return (
+      <div className={styles.error}>
+        <p>{error}</p>
+      </div>
+    );
+  }
+
+  const renderProducts = () => {
+    if (loading) {
+      return <div className={styles.loading}>Loading products...</div>;
+    }
+
+    if (!Array.isArray(products) || products.length === 0) {
+      return <div className={styles.noResults}>No products found for this category.</div>;
+    }
+
+    return products.map((product) => {
+      console.log('Rendering product:', product); // Debug log
+      
+      // Extract image from product or variant
+      let image = product.image;
+      if (!image && product.variants && product.variants.$values && product.variants.$values.length > 0) {
+        const firstVariant = product.variants.$values[0];
+        if (firstVariant.images && firstVariant.images.$values && firstVariant.images.$values.length > 0) {
+          image = firstVariant.images.$values[0];
+        }
+      }
+      
+      // Extract category name
+      let categoryName = typeof product.category === 'string' ? product.category : 'Unknown';
+      if (typeof product.category === 'object' && product.category !== null) {
+        categoryName = product.category.name || 'Unknown';
+      }
+      
+      return (
+        <ProductCard 
+          key={product.id}
+          product={{
+            slug: product.slug,
+            id: product.id,
+            name: product.name,
+            price: product.price || (product.priceDetails ? product.priceDetails.discount : 0),
+            category: categoryName,
+            image: image || '/placeholder.jpg',
+            colors: product.variants ? product.variants.$values.length : 0,
+            isBestSeller: product.tags?.includes('bestseller') || false,
+            isSustainable: product.tags?.includes('sustainable') || false
+          }}
+        />
+      );
+    });
+  };
+
+  return (
+    <div className={styles.page}>
+      <div className={styles.container}>
+        {/* Header */}
+        <div className={styles.header}>
+          <h1>{categoryName ? `${categoryName}'s Nike Shoes (${products?.length || 0})` : 'Loading...'}</h1>
+          <div className={styles.controls}>
+            <button className={styles.filterButton} onClick={toggleFilters}>
+              <FunnelIcon className={styles.icon} />
+              {showFilters ? 'Hide' : 'Show'} Filters
+            </button>
+            <div className={styles.sortDropdown}>
+              <button 
+                className={styles.sortButton}
+                onClick={() => setShowSortMenu(!showSortMenu)}
+              >
+                Sort By: {sortOptions.find(opt => opt.value === sortBy)?.label || 'Featured'}
+                <ChevronDownIcon className={styles.icon} />
+              </button>
+              {showSortMenu && (
+                <div className={styles.sortMenu}>
+                  {sortOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      className={`${styles.sortOption} ${
+                        sortBy === option.value ? styles.active : ''
+                      }`}
+                      onClick={() => updateSort(option.value)}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className={styles.content}>
+          {/* Filters */}
+          {showFilters && (
+            <aside className={styles.filters}>
+              {filters.map((filter, index) => (
+                <div key={index} className={styles.filterGroup}>
+                  <button className={styles.filterButton}>
+                    {filter.name}
+                    {filter.count && <span>({filter.count})</span>}
+                    <ChevronDownIcon className={styles.icon} />
+                  </button>
+                </div>
+              ))}
+            </aside>
+          )}
+
+          {/* Products Grid */}
+          <div className={`${styles.productsGrid} ${!showFilters ? styles.fullWidth : ''}`}>
+            {renderProducts()}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+} 

@@ -1,0 +1,139 @@
+@baseUrl = http://localhost:5000/api
+
+### Get all products
+GET {{baseUrl}}/products
+Accept: application/json
+
+### Get product by ID (use numeric ID)
+GET {{baseUrl}}/products/1
+Accept: application/json
+
+### Get product by slug (use product-name-as-slug)
+GET {{baseUrl}}/products/slug/nike-air-force-1
+Accept: application/json
+
+### Get products by category
+GET {{baseUrl}}/products/category/men
+Accept: application/json
+
+### Create new product
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+    "name": "Nike Air Force 1",
+    "description": "Classic basketball shoes with modern comfort",
+    "brand": "Nike",
+    "category": ["1"],
+    "tags": ["sneakers", "basketball", "classic"],
+    "stock": 25,
+    "slug": "nike-air-force-1",
+    "price": {
+        "original": 2000000,
+        "discount": 1800000
+    },
+    "variants": [
+        {
+            "color": "White",
+            "sizes": [
+                {
+                    "size": "40",
+                    "stock": 5
+                },
+                {
+                    "size": "41",
+                    "stock": 5
+                },
+                {
+                    "size": "42",
+                    "stock": 5
+                }
+            ],
+            "images": [
+                "https://example.com/nike-af1-white-1.jpg",
+                "https://example.com/nike-af1-white-2.jpg"
+            ]
+        }
+    ]
+}
+
+### Update product (use numeric ID)
+PUT {{baseUrl}}/products/1
+Content-Type: application/json
+
+{
+    "name": "Nike Air Force 1 '07",
+    "description": "Updated classic basketball shoes with modern comfort",
+    "brand": "Nike",
+    "category": ["1"],
+    "tags": ["sneakers", "basketball", "classic", "updated"],
+    "stock": 30,
+    "slug": "nike-air-force-1-07",
+    "price": {
+        "original": 2200000,
+        "discount": 1900000
+    },
+    "variants": [
+        {
+            "color": "White",
+            "sizes": [
+                {
+                    "size": "40",
+                    "stock": 6
+                },
+                {
+                    "size": "41",
+                    "stock": 6
+                },
+                {
+                    "size": "42",
+                    "stock": 6
+                }
+            ],
+            "images": [
+                "https://example.com/nike-af1-white-1-updated.jpg",
+                "https://example.com/nike-af1-white-2-updated.jpg"
+            ]
+        }
+    ]
+}
+
+### Delete product (use numeric ID)
+DELETE {{baseUrl}}/products/1
+
+### Add variant to product (use numeric ID)
+POST {{baseUrl}}/products/1/variants
+Content-Type: application/json
+
+{
+    "color": "Black",
+    "sizes": [
+        {
+            "size": "40",
+            "stock": 3
+        },
+        {
+            "size": "41",
+            "stock": 3
+        },
+        {
+            "size": "42",
+            "stock": 3
+        }
+    ],
+    "images": [
+        "https://example.com/nike-af1-black-1.jpg",
+        "https://example.com/nike-af1-black-2.jpg"
+    ]
+}
+
+### Update variant size stock (use numeric ID)
+PATCH {{baseUrl}}/products/variants/1/size/40/stock
+Content-Type: application/json
+
+{
+    "stock": 10
+}
+
+### Delete variant (use numeric ID)
+DELETE {{baseUrl}}/products/variants/1 
