@@ -1,0 +1,424 @@
+@baseUrl = http://localhost:5000/api
+
+### Get all products
+GET {{baseUrl}}/products
+Accept: application/json
+
+### Search products
+GET {{baseUrl}}/products/search?q=nike
+Accept: application/json
+
+### Search products with pagination
+GET {{baseUrl}}/products/search?q=nike&page=1&pageSize=5
+Accept: application/json
+
+### Search products with filters
+GET {{baseUrl}}/products/search?q=nike&category=men&minPrice=1000000&maxPrice=3000000&brand=Nike&sortBy=price_asc
+Accept: application/json
+
+### Search products by category only
+GET {{baseUrl}}/products/search?category=men
+Accept: application/json
+
+### Search products by price range only
+GET {{baseUrl}}/products/search?minPrice=1000000&maxPrice=2000000
+Accept: application/json
+
+### Get product by ID (use numeric ID)
+GET {{baseUrl}}/products/1
+Accept: application/json
+
+### Get product by slug (use product-name-as-slug)
+GET {{baseUrl}}/products/slug/nike-air-force-1
+Accept: application/json
+
+### Get products by category
+GET {{baseUrl}}/products/category/men
+Accept: application/json
+
+### Create new product
+POST {{baseUrl}}/products
+Content-Type: application/json
+
+{
+    "name": "Nike Air Force 1",
+    "description": "Classic basketball shoes with modern comfort",
+    "brand": "Nike",
+    "category": ["1"],
+    "tags": ["sneakers", "basketball", "classic"],
+    "stock": 25,
+    "slug": "nike-air-force-1",
+    "price": {
+        "original": 2000000,
+        "discount": 1800000
+    },
+    "variants": [
+        {
+            "color": "White",
+            "sizes": [
+                {
+                    "size": "40",
+                    "stock": 5
+                },
+                {
+                    "size": "41",
+                    "stock": 5
+                },
+                {
+                    "size": "42",
+                    "stock": 5
+                }
+            ],
+            "images": [
+                "https://example.com/nike-af1-white-1.jpg",
+                "https://example.com/nike-af1-white-2.jpg"
+            ]
+        }
+    ]
+}
+
+### Update product (use numeric ID)
+PUT {{baseUrl}}/products/1
+Content-Type: application/json
+
+{
+    "name": "Nike Air Force 1 '07",
+    "description": "Updated classic basketball shoes with modern comfort",
+    "brand": "Nike",
+    "category": ["1"],
+    "tags": ["sneakers", "basketball", "classic", "updated"],
+    "stock": 30,
+    "slug": "nike-air-force-1-07",
+    "price": {
+        "original": 2200000,
+        "discount": 1900000
+    },
+    "variants": [
+        {
+            "color": "White",
+            "sizes": [
+                {
+                    "size": "40",
+                    "stock": 6
+                },
+                {
+                    "size": "41",
+                    "stock": 6
+                },
+                {
+                    "size": "42",
+                    "stock": 6
+                }
+            ],
+            "images": [
+                "https://example.com/nike-af1-white-1-updated.jpg",
+                "https://example.com/nike-af1-white-2-updated.jpg"
+            ]
+        }
+    ]
+}
+
+### Delete product (use numeric ID)
+DELETE {{baseUrl}}/products/1
+
+### Add variant to product (use numeric ID)
+POST {{baseUrl}}/products/1/variants
+Content-Type: application/json
+
+{
+    "color": "Black",
+    "sizes": [
+        {
+            "size": "40",
+            "stock": 3
+        },
+        {
+            "size": "41",
+            "stock": 3
+        },
+        {
+            "size": "42",
+            "stock": 3
+        }
+    ],
+    "images": [
+        "https://example.com/nike-af1-black-1.jpg",
+        "https://example.com/nike-af1-black-2.jpg"
+    ]
+}
+
+### Update variant size stock (use numeric ID)
+PATCH {{baseUrl}}/products/variants/1/size/40/stock
+Content-Type: application/json
+
+{
+    "stock": 10
+}
+
+### Delete variant (use numeric ID)
+DELETE {{baseUrl}}/products/variants/1 
+
+### USER ENDPOINTS ###
+
+### Get all users
+GET {{baseUrl}}/users
+Accept: application/json
+
+### Get user by ID
+GET {{baseUrl}}/users/1
+Accept: application/json
+
+### Create new user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+    "username": "newuser",
+    "email": "newuser@example.com",
+    "password": "Password123",
+    "fullName": "New User",
+    "gender": "male",
+    "phoneNumber": "0123456789"
+}
+
+### Update user
+PUT {{baseUrl}}/users/1
+Content-Type: application/json
+
+{
+    "id": 1,
+    "username": "updateduser",
+    "email": "updateduser@example.com",
+    "fullName": "Updated User",
+    "gender": "female",
+    "phoneNumber": "9876543210"
+}
+
+### Delete user
+DELETE {{baseUrl}}/users/1
+
+### Add address to user
+POST {{baseUrl}}/users/1/addresses
+Content-Type: application/json
+
+{
+    "street": "789 New Street",
+    "city": "Ho Chi Minh City",
+    "district": "District 2",
+    "ward": "Thao Dien",
+    "country": "Vietnam",
+    "isDefault": true
+}
+
+### Add item to cart
+POST {{baseUrl}}/users/1/cartitems
+Content-Type: application/json
+
+{
+    "productId": 2,
+    "quantity": 1,
+    "sizeOrder": "39",
+    "colorOrder": "Pink"
+}
+
+### Remove item from cart
+DELETE {{baseUrl}}/users/1/cartitems/1
+
+### AUTHENTICATION ENDPOINTS ###
+
+### Register new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+    "username": "testuser",
+    "email": "testuser@example.com",
+    "password": "Password123",
+    "fullName": "Test User"
+}
+
+### Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "user@example.com",
+    "password": "User123"
+}
+
+### Refresh token
+POST {{baseUrl}}/auth/refreshtoken
+Content-Type: application/json
+
+{
+    "refreshToken": "your-refresh-token-here"
+}
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Content-Type: application/json
+
+{
+    "refreshToken": "your-refresh-token-here"
+}
+
+### CART ENDPOINTS ###
+
+### Get cart items
+GET {{baseUrl}}/cart
+Accept: application/json
+
+### Add item to cart
+POST {{baseUrl}}/cart
+Content-Type: application/json
+
+{
+    "productId": 1,
+    "quantity": 1,
+    "size": "40",
+    "color": "White"
+}
+
+### Update cart item quantity
+PUT {{baseUrl}}/cart/1/quantity
+Content-Type: application/json
+
+{
+    "quantity": 2
+}
+
+### Delete cart item
+DELETE {{baseUrl}}/cart/1
+
+### Clear cart (delete all items)
+DELETE {{baseUrl}}/cart 
+
+### ORDER ENDPOINTS ###
+
+### Get all orders
+GET {{baseUrl}}/orders
+Accept: application/json
+
+### Get order by ID
+GET {{baseUrl}}/orders/1
+Accept: application/json
+
+### Get orders by user ID
+GET {{baseUrl}}/orders/user/1
+Accept: application/json
+
+### Create new order
+POST {{baseUrl}}/orders
+Content-Type: application/json
+
+{
+    "userId": 1,
+    "fullName": "John Doe",
+    "email": "john@example.com",
+    "phone": "0123456789",
+    "address": "123 Main Street",
+    "city": "Ho Chi Minh City",
+    "note": "Please deliver in the morning",
+    "paymentMethod": "COD"
+}
+
+### Update order status
+PATCH {{baseUrl}}/orders/1/status
+Content-Type: application/json
+
+{
+    "status": "Shipped"
+}
+
+### Cancel order (only for pending orders)
+PATCH {{baseUrl}}/orders/1/cancel
+Content-Type: application/json
+
+### Update order (all fields)
+PUT {{baseUrl}}/orders/1
+Content-Type: application/json
+
+{
+    "userId": 1,
+    "fullName": "Vũ Đức Anh",
+    "email": "vng15960@gmail.com",
+    "phone": "0377775528",
+    "address": "Xuân Thủy",
+    "city": "Thảo Điền, Quận 2",
+    "note": "123",
+    "paymentMethod": "cod",
+    "status": "Shipped"
+}
+
+### Delete order
+DELETE {{baseUrl}}/orders/1
+
+### Response examples:
+# Success: 200 OK
+# {
+#   "message": "Order cancelled successfully"
+# }
+#
+# Error cases:
+# 404 Not Found - "Order not found"
+# 400 Bad Request - "Cannot cancel order in {status} status. Only pending orders can be cancelled."
+# 500 Internal Server Error - "Internal server error: {error message}" 
+
+### CATEGORY ENDPOINTS ###
+
+### Get all categories
+GET {{baseUrl}}/categories
+Accept: application/json
+
+### Get category by ID
+GET {{baseUrl}}/categories/1
+Accept: application/json
+
+### Get category by name
+GET {{baseUrl}}/categories/name/men
+Accept: application/json
+
+### Get category by slug
+GET {{baseUrl}}/categories/slug/men
+Accept: application/json
+
+### Get products by category slug
+GET {{baseUrl}}/categories/slug/men/products
+Accept: application/json
+
+### Create new category
+POST {{baseUrl}}/categories
+Content-Type: application/json
+
+{
+    "name": "Women",
+    "description": "Women's shoes collection",
+    "slug": "women"
+}
+
+### Update category
+PUT {{baseUrl}}/categories/1
+Content-Type: application/json
+
+{
+    "name": "Men's Shoes",
+    "description": "Updated men's shoes collection",
+    "slug": "mens-shoes"
+}
+
+### Delete category
+DELETE {{baseUrl}}/categories/1 
+
+### UPLOAD ENDPOINTS ###
+
+### Test upload service
+GET {{baseUrl}}/upload/test
+Accept: application/json
+
+### Upload files
+# Note: This endpoint requires multipart/form-data which is not directly supported in .http files
+# Use a tool like Postman or curl to test this endpoint
+# Example curl command:
+# curl -X POST {{baseUrl}}/upload -F "img=@/path/to/image1.jpg" -F "img=@/path/to/image2.jpg"
+POST {{baseUrl}}/upload
+# Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW 

@@ -1,0 +1,242 @@
+.orderPage {
+  padding: 2rem;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      color: #333;
+    }
+  }
+
+  .loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
+    font-size: 1.2rem;
+    color: #666;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+
+  .tab {
+      padding: 0.5rem 1rem;
+    border: none;
+      border-radius: 20px;
+      background-color: #fff;
+    color: #666;
+    cursor: pointer;
+      transition: all 0.3s ease;
+    white-space: nowrap;
+      font-size: 0.9rem;
+
+    &:hover {
+        background-color: #eee;
+    }
+
+    &.active {
+        background-color: #333;
+        color: #fff;
+      }
+    }
+  }
+
+  .orderList {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .noOrders {
+    text-align: center;
+    padding: 3rem;
+    background-color: #fff;
+    border-radius: 8px;
+    color: #666;
+    font-size: 1.1rem;
+  }
+
+  .orderCard {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+
+  .orderHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+
+  .orderInfo {
+    .orderId {
+      font-weight: 600;
+      color: #333;
+          margin-right: 1rem;
+    }
+
+    .orderDate {
+      color: #666;
+      font-size: 0.9rem;
+    }
+  }
+
+      .orderActions {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        .cancelButton {
+    padding: 0.5rem 1rem;
+          border: 1px solid #d0021b;
+          border-radius: 20px;
+          background-color: white;
+          color: #d0021b;
+          font-size: 0.9rem;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: #d0021b;
+    color: white;
+          }
+
+          &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            &:hover {
+              background-color: white;
+              color: #d0021b;
+            }
+          }
+        }
+      }
+
+      .orderStatus {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        color: #fff;
+        font-size: 0.9rem;
+    font-weight: 500;
+      }
+  }
+
+  .orderItems {
+    padding: 1rem;
+
+  .item {
+    display: flex;
+    gap: 1rem;
+        padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+
+    &:last-child {
+      border-bottom: none;
+  }
+
+  .itemImage {
+    flex-shrink: 0;
+    position: relative;
+    width: 80px;
+    height: 80px;
+
+    img {
+      border-radius: 4px;
+      object-fit: cover;
+    }
+  }
+
+  .itemInfo {
+    flex-grow: 1;
+
+    h3 {
+            font-size: 1rem;
+      color: #333;
+            margin: 0 0 0.5rem 0;
+    }
+
+    p {
+            color: #666;
+      margin: 0.25rem 0;
+            font-size: 0.9rem;
+    }
+
+    .itemPrice {
+            color: #333;
+      font-weight: 600;
+            margin-top: 0.5rem;
+          }
+        }
+    }
+  }
+
+  .orderFooter {
+    padding: 1rem;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+
+  .shippingInfo {
+    h4 {
+          font-size: 1rem;
+      color: #333;
+          margin: 0 0 0.5rem 0;
+    }
+
+    p {
+          color: #666;
+      margin: 0.25rem 0;
+          font-size: 0.9rem;
+    }
+  }
+
+  .orderTotal {
+    text-align: right;
+
+    span {
+      display: block;
+          color: #666;
+          font-size: 0.9rem;
+      
+      &.totalPrice {
+            font-size: 1.2rem;
+        font-weight: 600;
+            color: #333;
+        margin-top: 0.25rem;
+      }
+    }
+  }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .orderPage {
+    padding: 1rem;
+
+    .orderCard {
+      .orderFooter {
+        flex-direction: column;
+        gap: 1rem;
+
+        .orderTotal {
+          text-align: left;
+        }
+      }
+    }
+  }
+  }

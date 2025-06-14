@@ -1,0 +1,92 @@
+.registerContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 2rem;
+
+  .registerCard {
+    width: 100%;
+    max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+
+    .brandIcons {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+
+      img {
+        transition: transform 0.2s ease;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
+    }
+
+    .registerHeader {
+      text-align: center;
+      margin-bottom: 2rem;
+
+      h2 {
+        margin-bottom: 0.5rem;
+      }
+    }
+
+    .registerButton {
+      width: 100%;
+    }
+
+    .socialLogin {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+
+      button {
+        flex: 1;
+        height: 40px;
+      }
+
+      .googleButton {
+        background-color: #fff;
+        border-color: #ddd;
+        color: #333;
+
+        &:hover {
+          background-color: #f5f5f5;
+          border-color: #ccc;
+        }
+      }
+
+      .facebookButton {
+        background-color: #1877f2;
+        border-color: #1877f2;
+        color: #fff;
+
+        &:hover {
+          background-color: #166fe5;
+          border-color: #166fe5;
+        }
+      }
+    }
+
+    .loginLink {
+      text-align: center;
+      margin-top: 1.5rem;
+
+      a {
+        margin-left: 0.5rem;
+        color: #1890ff;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+} 

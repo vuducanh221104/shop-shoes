@@ -1,0 +1,93 @@
+.loginContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f5f5f5;
+  padding: 2rem;
+}
+
+.loginCard {
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+
+  .brandIcons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+
+    img {
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .loginHeader {
+    text-align: center;
+    margin-bottom: 2rem;
+
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+.loginButton {
+  width: 100%;
+  height: 45px;
+  font-size: 16px;
+  border-radius: 4px;
+}
+
+.forgotPassword {
+  text-align: right;
+  margin-top: -15px;
+  margin-bottom: 15px;
+}
+
+.socialLogin {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.googleButton,
+.facebookButton {
+  width: 48%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.googleButton {
+  background-color: #fff;
+  color: #4285f4;
+  border: 1px solid #4285f4;
+  
+  &:hover {
+    background-color: #f1f3f4;
+  }
+}
+
+.facebookButton {
+  background-color: #fff;
+  color: #1877f2;
+  border: 1px solid #1877f2;
+  
+  &:hover {
+    background-color: #f0f2f5;
+  }
+}
+
+.registerLink {
+  text-align: center;
+  margin-top: 20px;
+} 
